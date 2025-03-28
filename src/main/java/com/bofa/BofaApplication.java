@@ -11,8 +11,7 @@ public class BofaApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BofaApplication.class, args);
 		
-		Customer cust = new Customer(); 
-		//cust.
+		
 	}
 	
 	
