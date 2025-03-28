@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Employee {
+public class Employee implements Comparable<Employee>{
 //     *  Employees -- Gowth
      @Id
      @GeneratedValue(strategy = GenerationType.AUTO)
@@ -87,6 +87,11 @@ public class Employee {
 
     public void setSalary(long salary) {
         this.salary = salary;
+    }
+
+    @Override
+    public int compareTo(Employee o) {
+        return Long.compare(this.employeeId,o.employeeId);
     }
 
     @Override
