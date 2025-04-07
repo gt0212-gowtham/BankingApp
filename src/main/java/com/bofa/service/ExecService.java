@@ -1,21 +1,21 @@
 package com.bofa.service;
 
-import com.bofa.model.Service;
+import com.bofa.model.ServiceModel;
 
 import java.util.List;
 
 
 public interface ExecService {
 	
-    public Service getService(Long serviceId);
+    public ServiceModel getService(Long serviceId);
 
-    public List<Service> getAllServices();
+    public List<ServiceModel> getAllServices();
 
     public void deleteService(Long serviceId);
 
-    public Service updateService(Service service);
+    public ServiceModel updateService(ServiceModel service);
 
-    public Service saveService(Service service);
+    public ServiceModel saveService(ServiceModel service);
 
 
 }

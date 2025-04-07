@@ -1,7 +1,24 @@
 package com.bofa.model;
 
-public class Services {
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class ServiceModel {
 	
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	public long serviceId;
 	
 	protected boolean status;
@@ -15,7 +32,7 @@ public class Services {
 	public String[]	lendingServices;
 	
 	//Parameterized constructor
-	public Services(long serviceId, boolean status, String customerService,
+	public ServiceModel(long serviceId, boolean status, String customerService,
 			String[] retailServices, String[] digitalServices, String[] lendingServices)
 	{
 		this.serviceId = serviceId;
@@ -29,7 +46,7 @@ public class Services {
 	}
 	
 	//Default Constructor
-	public Services()
+	public ServiceModel()
 	{
 		System.out.println("The default constructor is called");
 	}
@@ -112,6 +129,11 @@ public class Services {
 		System.out.println(c);
 		
 		return c;
+	}
+
+	public Object getServiceType() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	
