@@ -2,81 +2,60 @@ package com.bofa.service;
 
 import java.util.List;
 
-import com.bofa.model.Service;
-import com.bofa.repository.ServiceRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-public class ExecServiceImpl implements ExecService{
-	
-	
-	private ServiceRepository servrepo; 
+import com.bofa.model.ServiceModel;
+import com.bofa.repository.ServiceRepository;
 
-	@Override
-	public Service getService(Long serviceId) {
-		// TODO Auto-generated method stub
-		servrepo.findById(serviceId)
-		.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Service Not Found"));
-		// TODO Auto-generated method stub
-		return (Service) servrepo.getById(serviceId);
-	}
+@Service
+public class ExecServiceImpl implements ExecService {
 
-	@Override
-	public List<Service> getAllServices() {
-		// TODO Auto-generated method stub
-		List<Service> servicelist = servrepo.findAll();
-		
-		if(servicelist.isEmpty())
-		{
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Services are not found");
-		}
-		// TODO Auto-generated method stub
-		
-		servicelist.forEach(service ->
-		{
-			System.out.println("Service details are as follows" + service);
-		} );
-		return servicelist;
-	}
+    @Autowired
+    private ServiceRepository servrepo;
 
-	@Override
-	public void deleteService(Long serviceId) {
-		// TODO Auto-generated method stub
-		if(servrepo.findById(serviceId).isPresent())
-		{
-			servrepo.deleteById(serviceId);
-			System.out.println("This ServiceId got deleteed" + serviceId);
-		}
-		
-		else
-		{
-			System.out.println("The serviceid is not found");
-		}
-			
-		// TODO Auto-generated method stub
-		return;
-	}
+    @Override
+    public ServiceModel getService(Long serviceId) {
+        servrepo.findById(serviceId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Service Not Found"));
+        return servrepo.getById(serviceId);
+    }
 
-	@Override
-	public Service updateService(Service service) {
-		// TODO Auto-generated method stub
-		System.out.println("Updating the service");
+    @Override
+    public List<ServiceModel> getAllServices() {
+        List<ServiceModel> servicelist = servrepo.findAll();
+        if (servicelist.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Services are not found");
+        }
+        servicelist.forEach(service ->
+            System.out.println("Service details are as follows: " + service)
+        );
+        return servicelist;
+    }
 
-		if(service.getServiceId() == 0)
-		{
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid first name");
-		}
-		
-		
-		return service;
+    @Override
+    public void deleteService(Long serviceId) {
+        if (servrepo.findById(serviceId).isPresent()) {
+            servrepo.deleteById(serviceId);
+            System.out.println("This ServiceId got deleted: " + serviceId);
+        } else {
+            System.out.println("The serviceId is not found");
+        }
+    }
 
-	}
+    @Override
+    public ServiceModel updateService(ServiceModel service) {
+        System.out.println("Updating the service");
+        if (service.getServiceId() == 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid service ID");
+        }
+        return servrepo.save(service);
+    }
 
-	@Override
-	public Service saveService(Service service) {
-		// TODO Auto-generated method stub
-		// TODO Auto-generated method stub
-		return servrepo.save(service);
-	}
-
+    @Override
+    public ServiceModel saveService(ServiceModel service) {
+        return servrepo.save(service);
+    }
 }

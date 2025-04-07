@@ -99,8 +99,8 @@ public class TestServices {
 		
 	
 	
-	Services s = new Services();
-    Services serviceObj = new Services(1001, true, "Customer Support",
+	ServiceModel s = new ServiceModel();
+    ServiceModel serviceObj = new ServiceModel(1001, true, "Customer Support",
             new String[]{"Retail Service 1", "Retail Service 2"},
             new String[]{"Digital Service 1", "Digital Service 2"},
             new String[]{"Lending Service 1", "Lending Service 2"});
@@ -110,13 +110,15 @@ public class TestServices {
    
 
     addSubtractMultiplyDivide(num1, num2);
-    compareValues(num1, num2);
-    logicalOperations(num1, num2);
-    bitwiseOperations(num1, num2);
-    checkNumber(-3);
-    printNumbersUsingForLoop(5);
-    printNumbersUsingWhileLoop(5);
-    printNumbersUsingDoWhileLoop(5);
+//    compareValues(num1, num2);
+//    logicalOperations(num1, num2);
+//    bitwiseOperations(num1, num2);
+//    checkNumber(-3);
+//    printNumbersUsingForLoop(5);
+//    printNumbersUsingWhileLoop(5);
+//    printNumbersUsingDoWhileLoop(5);
+    
+    System.out.println("I am in service class");
     
 }
 
