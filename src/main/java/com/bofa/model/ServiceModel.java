@@ -130,6 +130,11 @@ public class ServiceModel {
 		
 		return c;
 	}
+
+	public Object getServiceType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 }
