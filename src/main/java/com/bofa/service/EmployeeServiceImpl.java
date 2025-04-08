@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService{
@@ -18,6 +19,35 @@ public class EmployeeServiceImpl implements EmployeeService{
     private List<Employee> employeeCache=new ArrayList<>();
     private Set<Long> highsalariedempId=new HashSet<>();
     private Map<Long,Employee> employeeMap=new HashMap<>();
+
+
+    private final ReentrantLock lock=new ReentrantLock();
+    private final Set<String> saveEmployeeFirstName=Collections.synchronizedSet(new HashSet<>());
+
+    public void saveEmployeeWithThreadSafety(Employee employee){
+        lock.lock();
+        try {
+            if (!saveEmployeeFirstName.contains(employee.getFirstName())) {
+                saveEmployeeFirstName.add(employee.getFirstName());
+                EmpRepo.save(employee);
+                System.out.println("Employee saved " + employee.getFirstName());
+            } else {
+                System.out.println("Duplicate Employee " + employee.getFirstName());
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void processAsynSaveEmployee(Employee employee){
+        saveEmployeeWithThreadSafety(employee);
+    }
+
+    public List<Employee> getSortedEmployees(){
+        List<Employee> emplist=EmpRepo.findAll();
+        emplist.sort(Comparator.comparing(Employee::getFirstName));
+        return emplist;
+    }
 
     public EmployeeServiceImpl(EmployeeRepository empRepo) {
         EmpRepo = empRepo;
