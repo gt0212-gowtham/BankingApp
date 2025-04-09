@@ -60,8 +60,8 @@ public class SecurityConfiguration {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login").permitAll()
-                        .requestMatchers("/customers/**", "/api/clients/**", "/gmail/**").authenticated()
+                        .requestMatchers("/auth/login", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll() // /v3/api-docs/** this solved the "Failed to load remote configuration."
+                        .requestMatchers("/customers/**", "/api/clients/**", "/gmail/**", "/health").authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
