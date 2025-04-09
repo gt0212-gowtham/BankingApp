@@ -3,11 +3,13 @@ package com.bofa.service;
 import java.util.*;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.bofa.model.Branch;
 import com.bofa.repository.BranchRepository;
 
+@Service
 public class BranchServiceImpl implements BranchService {
 	private BranchRepository branchRepository;
 	

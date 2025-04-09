@@ -1,8 +1,11 @@
 package com.bofa.util;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
+import java.util.Base64;
 import java.util.Date;
 import java.util.function.Function;
 
@@ -25,9 +28,9 @@ public class JwtUtil {
 	isTokenExpired(token) 
 	
 	*/
-	
-	
-	private final String SECRET_KEY = "my_secret_key";
+
+    private static final String SECRET = "k8pIVxZXtRzIt9uWqkNzybI8P3fTo3uV0lU1mX8B5UE";
+    private static final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(Base64.getDecoder().decode(SECRET));
 
     // Generate Token
     public String generateToken(String username) {
@@ -62,9 +65,10 @@ public class JwtUtil {
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .setSigningKey(SECRET_KEY)
-                .parseClaimsJws(token) /// 0.11.5
-                .getBody();
+                .verifyWith(SECRET_KEY)
+                .build()
+                .parseSignedClaims(token) /// 0.11.5
+                .getPayload();
     }
 
     private boolean isTokenExpired(String token) {

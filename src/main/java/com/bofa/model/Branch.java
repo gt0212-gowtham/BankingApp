@@ -2,6 +2,7 @@ package com.bofa.model;
 
 import jakarta.persistence.*;
 
+@Entity
 public class Branch {
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
