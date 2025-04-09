@@ -23,4 +23,9 @@ public class EmployeeGlobalException {
         errorResponse.put("error", reason);
         return new ResponseEntity<>(errorResponse, HttpStatusCode.valueOf(statusCode));
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception ex){
+        return ResponseEntity.internalServerError().body("Error occured:"+ex.getMessage());
+    }
 }

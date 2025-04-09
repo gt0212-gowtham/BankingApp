@@ -21,6 +21,10 @@ public class EmployeeServiceImpl implements EmployeeService{
     private Map<Long,Employee> employeeMap=new HashMap<>();
 
 
+
+    @Autowired
+    private EmployeeKafkaProduce employeeKafkaProduce;
+
     private final ReentrantLock lock=new ReentrantLock();
     private final Set<String> saveEmployeeFirstName=Collections.synchronizedSet(new HashSet<>());
 
@@ -116,6 +120,7 @@ public class EmployeeServiceImpl implements EmployeeService{
     @Override
     public Employee saveEmployee(Employee employee){
         try {
+            employeeKafkaProduce.sendEmployee(employee);
             return EmpRepo.save(employee);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error saving employee", e);
