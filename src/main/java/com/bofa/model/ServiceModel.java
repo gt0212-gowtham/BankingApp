@@ -14,8 +14,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class ServiceModel {
-	
+public class ServiceModel implements Comparable<ServiceModel>
+
+{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -45,6 +46,15 @@ public class ServiceModel {
 		System.out.println("Fully paramterised constructor is called");
 	}
 	
+
+//    @Override
+//    public int compareTo(ServiceModel other) {
+//        // Null check to avoid NullPointerException
+//        if (this.customerService == null) return -1;
+//        if (other.customerService == null) return 1;
+//        return this.customerService.compareToIgnoreCase(other.customerService);
+//    }
+//	
 	//Default Constructor
 	public ServiceModel()
 	{
@@ -135,7 +145,13 @@ public class ServiceModel {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
+
+	@Override
+	public int compareTo(ServiceModel other) {
+	    return Long.compare(this.serviceId, other.serviceId);
+	}
+
 	
 }
 

@@ -2,6 +2,7 @@ package com.bofa.controller;
 
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,12 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bofa.model.ServiceModel;
 import com.bofa.service.ExecService;
+import com.bofa.util.bofakafkaproducer;
 
 
 @RestController
 @RequestMapping("/api/services")
 public class ServiceController {
 	
+	@Autowired
+	private bofakafkaproducer producer;
 	@Autowired
 	ExecService execserviceimpl;
 	
@@ -42,12 +46,23 @@ public class ServiceController {
 	 }
 	
 	
+//	@PostMapping("/add")
+//	 public ServiceModel saveService(@RequestBody ServiceModel service)
+//	 {
+//		return execserviceimpl.saveService(service);
+//		
+//	 }
+	
 	@PostMapping("/add")
-	 public ServiceModel saveService(@RequestBody ServiceModel service)
-	 {
-		return execserviceimpl.saveService(service);
-		
-	 }
+	public ServiceModel saveService(@RequestBody ServiceModel service)
+	
+	{
+	    ServiceModel saved = execserviceimpl.saveService(service);
+	    producer.sendServiceToKafka(saved);  // 🔥 Send to Kafka after saving
+	    return saved;
+	    
+//	   sendServiceToKafka
+	}
 	
 	
 	@PutMapping("/update/{serviceId}")

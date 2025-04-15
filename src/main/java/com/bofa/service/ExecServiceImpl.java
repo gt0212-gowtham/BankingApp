@@ -1,13 +1,28 @@
 package com.bofa.service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.bofa.exception.ServiceAlreadyExistsException;
+import com.bofa.exception.ServiceNotFoundException;
 import com.bofa.model.ServiceModel;
 import com.bofa.repository.ServiceRepository;
+import com.bofa.util.statusComparator;
+import com.bofa.util.IdComparator;
 
 @Service
 public class ExecServiceImpl implements ExecService {
@@ -18,14 +33,19 @@ public class ExecServiceImpl implements ExecService {
     private List<ServiceModel> serviceCache = new ArrayList<>();
     private Set<Long> activeServiceIds = new HashSet<>();
     private Map<Long, ServiceModel> serviceMap = new HashMap<>();
+    
+    // Thread safety additions
+    private final ReentrantLock lock = new ReentrantLock();
+    private final Set<Long> savedIds = Collections.synchronizedSet(new HashSet<>());
+    
 
     @Override
     public ServiceModel getService(Long serviceId)
     {
-        servrepo.findById(serviceId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Service Not Found"));
-        return servrepo.getById(serviceId);
+        return servrepo.findById(serviceId)
+            .orElseThrow(() -> new ServiceNotFoundException("Service with ID " + serviceId + " not found"));
     }
+
 
     @Override
     public List<ServiceModel> getAllServices() 
@@ -50,6 +70,13 @@ public class ExecServiceImpl implements ExecService {
         // Add to cache
         serviceCache.clear();
         serviceCache.addAll(servicelist);
+        
+        List<ServiceModel> list = servrepo.findAll();
+        Collections.sort(list); // Uses Comparable
+//        
+        serviceCache.sort(new IdComparator());
+        serviceCache.sort(new statusComparator());
+//        
 
         // Use HashSet to store active service IDs
         for (ServiceModel service : servicelist) 
@@ -111,6 +138,35 @@ public class ExecServiceImpl implements ExecService {
 
     @Override
     public ServiceModel saveService(ServiceModel service) {
+        if (servrepo.existsById(service.getServiceId())) {
+            throw new ServiceAlreadyExistsException("Service with ID " + service.getServiceId() + " already exists");
+        }
         return servrepo.save(service);
     }
+
+
+    
+    public void processAsyncSave(ServiceModel service)
+    {
+    	saveServiceWithThreadSafety(service);
+    }
+    
+    //Thread-safe save logic
+    public void saveServiceWithThreadSafety(ServiceModel service) {
+        lock.lock();
+        try {
+            if (!savedIds.contains(service.getServiceId())) {
+                savedIds.add(service.getServiceId());
+                servrepo.save(service);
+                System.out.println("Saved service: " + service.getServiceId());
+            } else {
+                System.out.println("Duplicate detected: " + service.getServiceId());
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+   
 }
+
+

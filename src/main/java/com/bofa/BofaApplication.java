@@ -2,10 +2,12 @@ package com.bofa;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import com.bofa.model.Customer;
 
 @SpringBootApplication
+@EnableAsync
 public class BofaApplication {
 
 	public static void main(String[] args) {
