@@ -63,10 +63,3 @@ public class Branch {
 	
 }
 
-/*
-branchid
-*   branch name
-*   branch address
-*   branch manager
-*   branch code
-*   Timings */
